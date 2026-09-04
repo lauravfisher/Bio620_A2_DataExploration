@@ -1,0 +1,61 @@
+---
+title: "Bio 620 - Assignment 2"
+output: html_document
+date: "2026-09-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(lattice)
+#note - I found some of the lattice functions in the appendix of Zurr et al. 2010 to look at range and distribution by group
+```
+
+```{r}
+#oat.csv data exploration 
+
+setwd("~/OneDrive - Adelphi University/Bio 620 Datasets")
+oats <- read.csv("oat.csv", header = TRUE)
+
+#research hypothesis: the researchers expect that the amount of grain per ear is directly predictive to the oat yield per plot. 
+#variables: there are two variables "grain" and "yield" both of which are continous numeric.
+#grain is the focal predictor, while yield is the response variable
+
+boxplot(oats$grain)
+boxplot(oats$yield)
+#in the grain boxplot the is an obvious outlier, with a value in the 2000s while all other measurements are in the 20s, this is likely an observation error with an omitted decimmal. 
+
+boxplot(oats$grain[oats$grain < 50])
+#with the outlier omitted you can see that the range makes more sense. 
+
+hist(oats$grain[oats$grain < 50])
+hist(oats$yield)
+#both distributions are a bit skewed, and could potentially use some corrections but they aren't horrible 
+
+oats2 <- oats[(oats$grain < 50), ]
+plot(oats2$yield ~ oats2$grain)
+#the scatterplot indicates that the two variables may have a direct proportional relationship
+```
+
+```{r}
+#bacteria.csv data exploration
+
+bacteria <- read.csv("bacteria.csv", header = TRUE)
+
+#research hypothesis: the researchers expect to see differing amounts of toxin depending on the species and diagnoisis of the sample, expecting to find certain species correlated with carcinomas
+#variables: this data set has two categorial variables (species and diagnosis), and one continuous numeric variable (toxin)
+#toxin is the response variable, while species and dignosis are both focal predictors 
+
+table(bacteria$species, bacteria$diagnosis)
+#balanced design for categorical variables 
+
+boxplot(bacteria$toxin)
+boxplot(bacteria$toxin ~ bacteria$diagnosis)
+boxplot(bacteria$toxin ~ bacteria$species)
+bwplot(bacteria$toxin ~ bacteria$species | bacteria$diagnosis)
+# these box plots make it look like our response variable have dramatically different variance, particularlly in the carcinogenic diagnoses
+
+hist(bacteria$toxin)
+histogram(~ bacteria$toxin | bacteria$species * bacteria$diagnosis)
+#I've made these... and they are not normally distributed. but this is the response variable so the lack of normal distribtuion may indicate actual results... so I'm not sure what happens at this point. 
+```
+
